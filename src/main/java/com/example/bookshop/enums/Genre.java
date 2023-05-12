@@ -1,4 +1,6 @@
-package com.example.bookshop.model;
+package com.example.bookshop.enums;
+
+import java.util.Set;
 
 public enum Genre {
     GENRE_COMEDY,

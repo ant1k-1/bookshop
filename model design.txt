@@ -1,0 +1,71 @@
+Сущности:
+User:
+    id;
+    username;
+    password;
+    roles;
+    email;
+    phone;
+    name;
+    birth_date;
+    creation_date;
+    active_status;
+    comments_allow;
+    bonuses;
+    cashback_level;
+    total_cost;
+    orders;
+    bookmarks;
+    comments;
+
+adminDTO
+moderatorDTO
+customerDTO
+
+Order:
+    id;
+    creation_date;
+    deliver_date;
+    address;
+    user_id;
+    books;
+    price;
+    final_price;
+    isDelivered;
+
+Book:
+    id;
+    title;
+    author;
+    year;
+    publisher;
+    ISBN;
+    category; //manga, classic, etc
+    genres;
+    price;
+    sale;
+    final_price;
+    amount;
+    age_restriction;
+    comments;
+    rates;
+    rating
+    description;
+    image;
+
+Author:
+    id;
+    fullname;
+    country;
+
+Comment:
+    id;
+    user;
+    title;
+    rate;
+    text;
+    creation_date;
+    likes;
+    dislikes;
+    isModerated;
+

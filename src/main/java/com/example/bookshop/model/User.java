@@ -43,24 +43,16 @@ public class User {
 
     private Boolean isCommentsAllowed;
 
-    private Integer bonuses;
-
-    private Integer cashbackLevel;
-
-    private Double totalCost;
-
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
-    private Collection<Order> orders = new ArrayList<>();
+    private Set<Order> orders = new HashSet<>();
 
-    @ElementCollection(targetClass = Long.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_bookmarks", joinColumns = @JoinColumn(name = "user_id"))
-    private Collection<Long> bookmarks = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_bookmarks")
+    private Set<Long> bookmarks = new HashSet<>();
 
-//    С корзиной все работает нормально - в таблице user_cart два столбца: user_id и cart
-//    В cart лежат id книжек
-    @ElementCollection(targetClass = Long.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_cart", joinColumns = @JoinColumn(name = "user_id"))
-    private Collection<Long> cart = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_cart")
+    private Map<Long, Integer> cart = new HashMap<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Collection<Comment> comments = new ArrayList<>();
@@ -82,9 +74,6 @@ public class User {
         this.creationDate = LocalDateTime.now();
         this.isActiveStatus = true;
         this.isCommentsAllowed = true;
-        this.bonuses = 0;
-        this.cashbackLevel = 0;
-        this.totalCost = 0D;
     }
     public static User makeModer(String username, String password) {
         User user = new User();
@@ -121,13 +110,10 @@ public class User {
                 creationDate,
                 isActiveStatus,
                 isCommentsAllowed,
-                bonuses,
-                cashbackLevel,
-                totalCost,
-                orders,
-                cart,
-                comments,
-                bookmarks
+                new ArrayList<>(orders),
+                new HashMap<>(cart),
+                new ArrayList<>(comments),
+                new HashSet<>(bookmarks)
         );
     }
 
@@ -144,12 +130,10 @@ public class User {
                 ", creationDate=" + creationDate +
                 ", isActiveStatus=" + isActiveStatus +
                 ", isCommentsAllowed=" + isCommentsAllowed +
-                ", bonuses=" + bonuses +
-                ", cashbackLevel=" + cashbackLevel +
-                ", totalCost=" + totalCost +
-                ", orders=" + orders +
-                ", bookmarks=" + bookmarks +
-                ", comments=" + comments +
+                ", orders ID=" + orders.stream().map(Order::getId).toList() +
+                ", bookmarks ID=" + bookmarks.stream().toList() +
+                ", cart ID=" + cart.keySet().stream().toList() +
+                ", comments ID=" + comments.stream().map(Comment::getId).toList() +
                 '}';
     }
 
@@ -159,5 +143,9 @@ public class User {
 
     public boolean isModer() {
         return roles.contains(Role.ROLE_MODERATOR);
+    }
+
+    public boolean isCommented(Long bookId) {
+        return comments.stream().mapToLong(s -> s.getBook().getId()).anyMatch(s -> s == bookId);
     }
 }

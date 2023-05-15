@@ -22,4 +22,16 @@ public enum Genre {
             case GENRE_SCIENCE_FICTION -> "Научная фантастика";
         };
     }
+
+    public String toRussian(){
+        return switch (this) {
+            case GENRE_COMEDY -> "Комедия";
+            case GENRE_DRAMA -> "Драма";
+            case GENRE_FANTASY -> "Фентэзи";
+            case GENRE_THRILLER -> "Триллер";
+            case GENRE_DETECTIVE -> "Детектив";
+            case GENRE_MELODRAMA -> "Мелодрама";
+            case GENRE_SCIENCE_FICTION -> "Научная фантастика";
+        };
+    }
 }

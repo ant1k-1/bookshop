@@ -1,6 +1,7 @@
 package com.example.bookshop.controller;
 
 import com.example.bookshop.model.Book;
+import com.example.bookshop.model.User;
 import com.example.bookshop.model.UserDetailsImpl;
 import com.example.bookshop.service.BookService;
 import com.example.bookshop.service.OrderService;
@@ -33,9 +34,13 @@ public class BookmarkController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model
     ) {
+        User user = userService.getPrivateById(userDetails.getUser().getId());
         List<Book> bookmarks = userService.getPrivateById(userDetails.getUser().getId()).getBookmarks()
                 .stream().map(bookService::getById)
                 .toList();
+        bookmarks = user.getBookmarks().stream()
+                        .map(bookService::getById)
+                        .toList();
         model.addAttribute("bookmarks", bookmarks);
         return "bookmark";
     }
@@ -47,6 +52,7 @@ public class BookmarkController {
     ) {
         form.remove("_csrf");
         for (String key : form.keySet()) {
+            System.out.println(key);
             userService.updateUserBookmarksById(userDetails.getUser().getId(), Long.parseLong(key), false);
         }
         return "redirect:/bookmark";

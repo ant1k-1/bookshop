@@ -1,6 +1,8 @@
 package com.example.bookshop.controller;
 
+import com.example.bookshop.dto.UserDTO;
 import com.example.bookshop.enums.Role;
+import com.example.bookshop.model.Order;
 import com.example.bookshop.model.UserDetailsImpl;
 import com.example.bookshop.service.BookService;
 import com.example.bookshop.service.CommentService;
@@ -11,6 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
 
 @RequestMapping("/profile")
 @Controller
@@ -38,20 +43,39 @@ public class ProfileController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model
     ) {
-        model.addAttribute("user", userDetails.getUser());
-        model.addAttribute("orders", userDetails.getUser().getOrders()
-                .stream()
-                .map(orderService::makeDTO)
-                .toList()
+        UserDTO user = userService.getById(userDetails.getUser().getId());
+        model.addAttribute("user", user);
+        model.addAttribute("deliveredOrders",
+                user
+                        .getOrders()
+                        .stream()
+                        .filter(Order::getIsDelivered)
+                        .sorted(Comparator.comparing(Order::getCreationDate))
+                        .map(orderService::makeDTO)
+                        .toList()
+                );
+        model.addAttribute("unDeliveredOrders",
+                user
+                        .getOrders()
+                        .stream()
+                        .filter(order -> !order.getIsDelivered())
+                        .sorted(Comparator.comparing(Order::getCreationDate))
+                        .map(orderService::makeDTO)
+                        .toList()
         );
-        System.out.println(userDetails.getUser().getOrders());
+        model.addAttribute("orders",
+                user
+                        .getOrders()
+                        .stream()
+                        .map(orderService::makeDTO)
+                        .toList()
+        );
         return "profile";
     }
 
-    @PostMapping("/close-order/{id}")
+    @RequestMapping(value = "/close-order/{id}", method = RequestMethod.POST)
     public String closeOrder(
-            @PathVariable("id") Long orderId,
-            Model model
+            @PathVariable("id") Long orderId
     ) {
         orderService.closeById(orderId);
         return "redirect:/profile";

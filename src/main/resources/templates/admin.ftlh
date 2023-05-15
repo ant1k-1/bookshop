@@ -1,6 +1,6 @@
 <#import "parts/common.ftlh" as c>
 <@c.page "Книги">
-    <div class="card p-3">
+    <div class="card p-3 mb-3">
         <div><h3>Добавить новую книгу</h3></div>
         <form action="admin/books" method="post" enctype="multipart/form-data">
             <input type="hidden" name="_csrf" value="${_csrf.token}">

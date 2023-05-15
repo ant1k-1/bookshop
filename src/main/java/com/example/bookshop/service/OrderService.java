@@ -1,12 +1,15 @@
 package com.example.bookshop.service;
 
 import com.example.bookshop.dto.OrderDTO;
+import com.example.bookshop.model.Book;
 import com.example.bookshop.model.Order;
 import com.example.bookshop.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +62,10 @@ public class OrderService {
     }
 
     public OrderDTO makeDTO(Order order) {
+        Map<Book, Integer> cartMapBooks = new HashMap<>();
+        for (Long key : order.getBooks().keySet()) {
+            cartMapBooks.put(bookService.getById(key), order.getBooks().get(key));
+        }
         return new OrderDTO(
                 order.getId(),
                 order.getCreationDate(),
@@ -67,8 +74,7 @@ public class OrderService {
                 order.getPrice(),
                 order.getFinalPrice(),
                 order.getIsDelivered(),
-                order.getBooks()
-                        .stream().map(bookService::getById).collect(Collectors.toList()),
+                cartMapBooks,
                 order.getCustomer()
         );
     }

@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -26,11 +27,11 @@ public class OrderDTO {
 
     private Boolean isDelivered;
 
-    private Collection<Book> books;
+    private Map<Book, Integer> books;
 
     private User customer;
 
-    public OrderDTO(Long id, LocalDateTime creationDate, LocalDateTime deliverDate, String address, Double price, Double finalPrice, Boolean isDelivered, Collection<Book> books, User customer) {
+    public OrderDTO(Long id, LocalDateTime creationDate, LocalDateTime deliverDate, String address, Double price, Double finalPrice, Boolean isDelivered, Map<Book, Integer> books, User customer) {
         this.id = id;
         this.creationDate = creationDate;
         this.deliverDate = deliverDate;

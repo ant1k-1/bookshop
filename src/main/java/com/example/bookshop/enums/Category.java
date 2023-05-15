@@ -31,4 +31,21 @@ public enum Category {
         };
     }
 
+    public String toRussian() {
+        return switch (this) {
+            case CATEGORY_ART -> "Искусство";
+            case CATEGORY_SOUL -> "Философия и религия";
+            case CATEGORY_KIDS -> "Книги для детей";
+            case CATEGORY_HOBBY -> "Увлечения";
+            case CATEGORY_COMIC -> "Комиксы";
+            case CATEGORY_BUSINESS -> "Деловая литература";
+            case CATEGORY_MANGA -> "Манга";
+            case CATEGORY_HEALTH -> "Здоровье и красота";
+            case CATEGORY_FICTION -> "Художественная литература";
+            case CATEGORY_SCIENCE -> "Наука и техника";
+            case CATEGORY_SOCIETY -> "Общество";
+            case CATEGORY_EDUCATION -> "Образование";
+        };
+    }
+
 }

@@ -12,6 +12,7 @@ import com.example.bookshop.service.CommentService;
 import com.example.bookshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ public class BookController {
     public String bookPage(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @CurrentSecurityContext(expression = "authentication?.name") String username,
             Model model
     ) {
         Book book = bookService.getById(id);
@@ -47,16 +49,30 @@ public class BookController {
         }
 
         model.addAttribute("book", book);
-        model.addAttribute("user", userDetails.getUser());
+        if (!username.equals("anonymousUser")) {
+            model.addAttribute("user", userService.getById(userDetails.getUser().getId()));
+        }
+
+        model.addAttribute("error", true);
         return "book";
     }
 
     @RequestMapping(value = "/{id}/buy", name = "cart", method = RequestMethod.POST)
-    public void sendToCart(
+    public String sendToCart(
             @PathVariable("id") Long bookId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        userService.updateUserCartById(userDetails.getUser().getId(), bookId, true);
+        userService.updateUserCartById(userDetails.getUser().getId(), bookId, 1, true);
+        return "redirect:/book/{id}";
+    }
+
+    @RequestMapping(value = "/{id}/bookmark", method = RequestMethod.POST)
+    public String sendToBookmarks(
+            @PathVariable("id") Long bookId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.updateUserBookmarksById(userDetails.getUser().getId(), bookId, true);
+        return "redirect:/book/{id}";
     }
 
     @RequestMapping(value = "/{id}/comment", name = "comment", method = RequestMethod.POST)
@@ -68,7 +84,7 @@ public class BookController {
             @RequestParam Map<String, String> form,
             Model model
     ) {
-        UserDTO userDTO = userDetails.getUser();
+        UserDTO userDTO = userService.getById(userDetails.getUser().getId());
         if (userDTO.getIsCommentsAllowed()){
             User user = userService.getPrivateById(userDTO.getId());
             Book book =  bookService.getById(bookId);
@@ -86,7 +102,19 @@ public class BookController {
             model.addAttribute("status", false);
         }
         model.addAttribute("book", bookService.getById(bookId));
-        model.addAttribute("user", userDetails.getUser());
-        return "redirect:/book";
+        model.addAttribute("user", userDTO);
+        return "redirect:/book/{id}";
+    }
+
+    @RequestMapping(value = "/{id}/comment/{comment_id}", method = RequestMethod.POST)
+    public String deleteComment(
+            @PathVariable("id") Long bookId,
+            @PathVariable("comment_id") Long commentId
+    ) {
+        Book book = bookService.getById(bookId);
+        book.removeComment(commentService.getById(commentId).getRate());
+        commentService.deleteById(commentId);
+        bookService.update(book);
+        return "redirect:/book/{id}";
     }
 }

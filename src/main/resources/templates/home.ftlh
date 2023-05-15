@@ -1,8 +1,20 @@
 <#import "parts/common.ftlh" as c>
 <@c.page "Главная">
-    <div><h3>Добро пожаловать${name}</h3></div>
+    <div class="row justify-content-between">
+        <h3>Добро пожаловать${name}</h3>
+        <div class="d-flex justify-content-center">
+            <#if logged>
+                <#if user.isModerator()>
+                    <a href="/moder" class="btn btn-primary mb-3 me-2" style="width: 10rem">Модерация</a>
+                </#if>
+                <#if user.isAdmin()>
+                    <a href="/admin" class="btn btn-primary mb-3 me-2" style="width: 10rem">Добавить книгу</a>
+                </#if>
+            </#if>
+        </div>
+    </div>
     <h3>Хиты</h3>
-    <h4>Топ 3 по рейтингу</h4>
+    <h4 class="mb-3">Топ 3 по рейтингу</h4>
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
         <#list topRate as book>
             <div class="col d-flex align-items-stretch">
@@ -37,7 +49,11 @@
                                     <form action="/buy" method="post">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}">
                                         <input type="hidden" name="bookId" value="${book.id()}">
-                                        <button id="buy-button" type="submit" class="btn btn-primary">В корзину ${book.finalPrice()} ₽</button>
+                                        <#if book.amount() != 0>
+                                            <button id="buy-button" type="submit" class="btn btn-primary">В корзину ${book.finalPrice()} ₽</button>
+                                        <#else >
+                                            <button type="button" class="btn btn-danger">Нет в наличии</button>
+                                        </#if>
                                     </form>
 
                             </#if>
@@ -54,7 +70,7 @@
             </div>
         </#list>
     </div>
-    <h4>Топ 3 по продажам</h4>
+    <h4 class="mb-3">Топ 3 по продажам</h4>
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
         <#list topSold as book>
             <div class="col d-flex align-items-stretch">
@@ -89,7 +105,11 @@
                                 <form action="/buy" method="post">
                                     <input type="hidden" name="_csrf" value="${_csrf.token}">
                                     <input type="hidden" name="bookId" value="${book.id()}">
-                                    <button id="buy-button" type="submit" class="btn btn-primary">В корзину ${book.finalPrice()} ₽</button>
+                                    <#if book.amount() != 0>
+                                        <button id="buy-button" type="submit" class="btn btn-primary">В корзину ${book.finalPrice()} ₽</button>
+                                    <#else >
+                                        <button type="button" class="btn btn-danger">Нет в наличии</button>
+                                    </#if>
                                 </form>
 
                             </#if>

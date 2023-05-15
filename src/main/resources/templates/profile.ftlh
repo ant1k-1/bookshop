@@ -1,7 +1,7 @@
 <#import "parts/common.ftlh" as c>
 
 <@c.page "Профиль">
-    <div class="card p-3">
+    <div class="card p-3 mb-3">
         <h1 class="mb-3">Профиль пользователя ${user.username}</h1>
         <form action="profile/edit" method="post">
             <input type="hidden" name="_csrf" value="${_csrf.token}">
@@ -67,20 +67,127 @@
         <div class="collapse" id="collapseAllOrders">
             <#list orders as order>
                 <div class="card p-3 mb-3">
-                    <#list order.books as book>
-                        <div class="row mb-2">
-                            <div class="col">
-                                <h4>${book.title}</h4>
+                    <div class="container d-flex flex-row align-items-between">
+                        <div class="flex-grow-1">
+                            <#list order.books as book, amount>
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <h4>${book.title}</h4>
+                                    </div>
+                                    <div class="col">
+                                        <p>Количество: ${amount}</p>
+                                    </div>
+                                </div>
+                            <#else>
+                                <h3 class="mb-3">Что-то пошло не так.</h3>
+                            </#list>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <h4>Статус заказа:</h4>
                             </div>
-                            <div class="col">
-                                <p>Количество: null</p>
+                            <div class="row">
+                                <#if order.isDelivered>
+                                    <h3 class="font-monospace text-success">
+                                        доставлен
+                                    </h3>
+                                <#else>
+                                    <h3 class="font-monospace text-success">
+                                        в доставке
+                                    </h3>
+                                </#if>
+                            </div>
+                            <div class="row">
+                                <#if !order.isDelivered>
+                                    <form action="/profile/close-order/${order.id}" method="post">
+                                        <input type="hidden" name="_csrf" value="${_csrf.token}">
+                                        <button type="submit" class="btn btn-success">Закрыть заказ</button>
+                                    </form>
+                                </#if>
                             </div>
                         </div>
-                        <#else>
-                            <h3 class="mb-3">Что-то пошло не так.</h3>
-                    </#list>
+                    </div>
+
                 </div>
                 <#else>
+                <h3 class="mb-3">Тут пока что пусто.</h3>
+            </#list>
+        </div>
+
+
+        <div class="collapse" id="collapseDeliveredTrue">
+            <#list deliveredOrders as order>
+                <div class="card p-3 mb-3">
+                    <div class="container d-flex flex-row align-items-between">
+                        <div class="flex-grow-1">
+                            <#list order.books as book, amount>
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <h4>${book.title}</h4>
+                                    </div>
+                                    <div class="col">
+                                        <p>Количество: ${amount}</p>
+                                    </div>
+                                </div>
+                            <#else>
+                                <h3 class="mb-3">Что-то пошло не так.</h3>
+                            </#list>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <h4>Статус заказа:</h4>
+                            </div>
+                            <div class="row">
+                                <h3 class="font-monospace text-success">
+                                    доставлен
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <#else>
+                <h3 class="mb-3">Тут пока что пусто.</h3>
+            </#list>
+        </div>
+
+
+        <div class="collapse" id="collapseDeliveredFalse">
+            <#list unDeliveredOrders as order>
+                <div class="card p-3 mb-3">
+                    <div class="container d-flex flex-row align-items-between">
+                        <div class="flex-grow-1">
+                            <#list order.books as book, amount>
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <h4>${book.title}</h4>
+                                    </div>
+                                    <div class="col">
+                                        <p>Количество: ${amount}</p>
+                                    </div>
+                                </div>
+                            <#else>
+                                <h3 class="mb-3">Что-то пошло не так.</h3>
+                            </#list>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <h4>Статус заказа:</h4>
+                            </div>
+                            <div class="row">
+                                <h3 class="font-monospace text-success">
+                                    в доставке
+                                </h3>
+                            </div>
+                            <div class="row">
+                                <form action="/profile/close-order/${order.id}" method="post">
+                                    <input type="hidden" name="_csrf" value="${_csrf.token}">
+                                    <button type="submit" class="btn btn-success">Закрыть заказ</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <#else>
                 <h3 class="mb-3">Тут пока что пусто.</h3>
             </#list>
         </div>

@@ -35,10 +35,6 @@ public class Comment {
 
     private LocalDateTime creationDate;
 
-    private Integer likes;
-
-    private Integer dislikes;
-
     private Boolean isModerated;
 
     public Comment(User user, Book book, String title, Integer rate, String text) {
@@ -49,8 +45,6 @@ public class Comment {
         this.rate = rate;
         this.text = text;
         this.creationDate = LocalDateTime.now();
-        this.likes = 0;
-        this.dislikes = 0;
         this.isModerated = user.isAdmin();
 
     }
@@ -70,8 +64,6 @@ public class Comment {
                 ", rate=" + rate +
                 ", text='" + text + '\'' +
                 ", creationDate=" + creationDate +
-                ", likes=" + likes +
-                ", dislikes=" + dislikes +
                 ", isModerated=" + isModerated +
                 '}';
     }

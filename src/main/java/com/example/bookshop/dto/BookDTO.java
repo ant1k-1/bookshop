@@ -7,5 +7,6 @@ public record BookDTO(Long id,
                       Double finalPrice,
                       String image,
                       Integer soldAmount,
-                      Double rating) {
+                      Double rating,
+                      Integer amount) {
 }

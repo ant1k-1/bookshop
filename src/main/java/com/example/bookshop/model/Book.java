@@ -96,7 +96,7 @@ public class Book {
         this.image = image;
 
         this.finalPrice = price - (price/100d * sale);
-        this.rating = -1d;
+        this.rating = -1.0;
         this.soldAmount = 0;
     }
 
@@ -105,6 +105,11 @@ public class Book {
         this.rating = (double) rates.stream()
                 .mapToInt(Integer::intValue)
                 .sum() / (double) rates.size();
+    }
+
+    public void updateSaleAndFinalPrice(Integer sale) {
+        this.sale = sale;
+        this.finalPrice = price - (price/100d * sale);
     }
 
     public void updateFinalPrice() {
@@ -124,7 +129,8 @@ public class Book {
                 finalPrice,
                 image,
                 soldAmount,
-                rating
+                rating,
+                amount
         );
     }
 
@@ -160,5 +166,21 @@ public class Book {
         }
         string.delete(string.lastIndexOf(","), string.length());
         return string.toString();
+    }
+
+    public void sold(Integer amount) {
+        this.soldAmount += amount;
+        this.amount -= amount;
+    }
+
+    public void removeComment(Integer rate) {
+        this.rates.remove(rate);
+        if (rates.isEmpty()) {
+            this.rating = -1.0;
+        } else {
+            this.rating = (double) rates.stream()
+                    .mapToInt(Integer::intValue)
+                    .sum() / (double) rates.size();
+        }
     }
 }

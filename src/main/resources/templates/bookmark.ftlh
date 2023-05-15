@@ -3,7 +3,7 @@
     <div class="card p-3">
         <h3 class="m-3">Закладки</h3>
         <div class="col p-3 mt-3">
-            <form action="/cart/delete" method="post" enctype="multipart/form-data">
+            <form action="/bookmark/delete" method="post" enctype="multipart/form-data">
                 <#list bookmarks as book>
                     <div class="card p-3 mb-3">
                         <input type="hidden" name="_csrf" value="${_csrf.token}">
@@ -13,6 +13,7 @@
                             </div>
                             <div class="col m-2">
                                 <h4>${book.title}</h4>
+                                <a class="mt-3 btn btn-secondary" href="/book/${book.id}">Страница в магазине</a>
                             </div>
                             <div class="col m-2">
                                 <div class="row p-2">

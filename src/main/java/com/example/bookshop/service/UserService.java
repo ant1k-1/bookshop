@@ -1,7 +1,6 @@
 package com.example.bookshop.service;
 
 import com.example.bookshop.dto.UserDTO;
-import com.example.bookshop.model.Order;
 import com.example.bookshop.model.User;
 import com.example.bookshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,33 +66,29 @@ public class UserService {
                 .orElse(null);
     }
 
-    public boolean updateUserCartById(Long userId, Long bookId, boolean add) {
-        User user = userRepository.getReferenceById(userId);
+    public void updateUserCartById(Long userId, Long bookId, Integer amount, boolean add) {
         if (bookService.isExisted(bookId)) {
+            User user = userRepository.getReferenceById(userId);
             if (add) {
-                user.getCart().add(bookId);
+                user.getCart().put(bookId, amount);
             } else {
                 user.getCart().remove(bookId);
             }
             userRepository.save(user);
-            return true;
         }
-        return false;
-
     }
 
-    public boolean updateUserBookmarksById(Long userId, Long bookId, boolean add) {
-        User user = userRepository.getReferenceById(userId);
+    public void updateUserBookmarksById(Long userId, Long bookId, boolean add) {
         if (bookService.isExisted(bookId)){
-            if (add) {
+            User user = userRepository.getReferenceById(userId);
+            if (add && !user.getBookmarks().contains(bookId)) {
                 user.getBookmarks().add(bookId);
             } else {
-                user.getCart().remove(bookId);
+                user.getBookmarks().remove(bookId);
+//                user.getBookmarks().clear();
             }
             userRepository.save(user);
-            return true;
         }
-        return false;
     }
 
     public boolean addCommentById(Long userId, Long commentId) {

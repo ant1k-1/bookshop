@@ -35,7 +35,6 @@ public class HomePageController {
         List<List<BookDTO>> trending = bookService.getTrending();
         List<BookDTO> topRate = trending.get(0);
         List<BookDTO> topSold = trending.get(1);
-
         model.addAttribute("topRate", topRate);
         model.addAttribute("topSold", topSold);
         if (username.equals("anonymousUser")) {
@@ -47,17 +46,17 @@ public class HomePageController {
             model.addAttribute("logged", true);
             model.addAttribute("name", ", " + username + "!");
             model.addAttribute("userId", userDetails.getUser().getId());
+            model.addAttribute("user", userDetails.getUser());
         }
         return "home";
     }
 
     @RequestMapping(value = {"/buy"}, method = RequestMethod.POST)
     public String sendToCart(
-            @RequestParam("bookId") String bookId,
+            @RequestParam("bookId") Long bookId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        System.out.println(userDetails.getUsername() + " buy book id="+bookId);
-        userService.updateUserCartById(userDetails.getUser().getId(), Long.parseLong(bookId), true);
+        userService.updateUserCartById(userDetails.getUser().getId(), bookId, 1, true);
         return "redirect:/home";
     }
 

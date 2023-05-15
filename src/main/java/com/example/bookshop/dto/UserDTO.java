@@ -5,15 +5,12 @@ import com.example.bookshop.model.Book;
 import com.example.bookshop.model.Comment;
 import com.example.bookshop.model.Order;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -28,16 +25,21 @@ public class UserDTO {
     private LocalDateTime creationDate;
     private Boolean isActiveStatus;
     private Boolean isCommentsAllowed;
-    private Integer bonuses;
-    private Integer cashbackLevel;
-    private Double totalCost;
     private Collection<Order> orders;
-    private Collection<Long> cart;
+    private Map<Long, Integer> cart;
     private Collection<Comment> comments;
-    private Collection<Long> bookmarks;
+    private Set<Long> bookmarks;
 
     public boolean isCommented(Long bookId) {
         return comments.stream().mapToLong(s -> s.getBook().getId()).anyMatch(s -> s == bookId);
+    }
+
+    public boolean isBookmarked(Long bookId) {
+        return bookmarks.contains(bookId);
+    }
+
+    public boolean isCarted(Long bookId) {
+        return cart.containsKey(bookId);
     }
 
     public boolean isAdmin() {

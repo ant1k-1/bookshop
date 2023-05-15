@@ -72,13 +72,13 @@ public class BookService {
         List<BookDTO> books = bookRepository.findAll()
                 .stream().map(Book::makeDTO).toList();
         List<BookDTO> topRate = books.stream()
-                .sorted(Comparator.comparingDouble(BookDTO::rating))
+                .sorted(Comparator.comparingDouble(BookDTO::rating).reversed())
                 .toList();
         if (topRate.size() > 3) {
             topRate = topRate.subList(0, 3);
         }
         List<BookDTO> topSold = books.stream()
-                .sorted(Comparator.comparing(BookDTO::soldAmount))
+                .sorted(Comparator.comparing(BookDTO::soldAmount).reversed())
                 .toList();
         if (topSold.size() > 3) {
             topSold = topSold.subList(0, 3);

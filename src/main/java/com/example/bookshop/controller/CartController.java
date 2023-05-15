@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,10 +38,17 @@ public class CartController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model
             ) {
-        List<Book> cart = userService.getPrivateById(userDetails.getUser().getId()).getCart()
-                .stream().map(bookService::getById)
-                .toList();
-        model.addAttribute("cart", cart);
+        Map<Long, Integer> cartMap = userService.getPrivateById(userDetails.getUser().getId()).getCart();
+        double cost = 0.0;
+        Map<Book, Integer> cartMapBooks = new HashMap<>();
+        for (Long key : cartMap.keySet()) {
+            Book book = bookService.getById(key);
+            Integer amount = cartMap.get(key);
+            cost += book.getFinalPrice()*amount;
+            cartMapBooks.put(book, amount);
+        }
+        model.addAttribute("cartMap", cartMapBooks);
+        model.addAttribute("cost", cost);
         return "cart";
     }
 
@@ -51,7 +59,18 @@ public class CartController {
     ) {
         form.remove("_csrf");
         for (String key : form.keySet()) {
-            userService.updateUserCartById(userDetails.getUser().getId(), Long.parseLong(key), false);
+            if (key.contains("amount")){
+                userService.updateUserCartById(userDetails.getUser().getId(),
+                        Long.parseLong(key.replace("amount", "")),
+                        Integer.parseInt(form.get(key)),
+                        true);
+            }
+            if (key.contains("delete")) {
+                userService.updateUserCartById(userDetails.getUser().getId(),
+                        Long.parseLong(key.replace("delete", "")),
+                        0,
+                        false);
+            }
         }
         return "redirect:/cart";
     }
@@ -67,13 +86,24 @@ public class CartController {
             User user = userService.getPrivateById(userDetails.getUser().getId());
             orderService.create(new Order(
                     address,
-                    new ArrayList<>(user.getCart()),
+                    new HashMap<>(user.getCart()),
                     user,
                     user.getCart()
+                            .keySet()
                             .stream()
                             .map(bookService::getById)
                             .toList()
             ));
+            System.out.println(user.getCart());
+            for (Long bookId : user.getCart().keySet()) {
+                System.out.println(bookId + "    " + user.getCart().get(bookId));
+                Book book = bookService.getById(bookId);
+                System.out.println(book);
+                book.sold(user.getCart().get(bookId));
+                System.out.println(book);
+                bookService.update(book);
+                System.out.println(book);
+            }
             userService.clearCartById(userDetails.getUser().getId());
         }
         return "redirect:/cart";

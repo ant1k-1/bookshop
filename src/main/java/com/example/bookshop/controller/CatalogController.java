@@ -100,7 +100,6 @@ public class CatalogController {
 
     public List<BookDTO> getByFilter(String searchBar, List<String> categoriesForm, List<String> genresForm, String sortingType, boolean sortReverse) {
         Stream<Book> bookStream = bookService.getAll().stream();
-
         if (!searchBar.isEmpty()) {
             bookStream = bookStream.filter(book ->
                     book.getTitle().toLowerCase().contains(searchBar.toLowerCase()) ||

@@ -1,10 +1,8 @@
 package com.example.bookshop.controller;
 
-import com.example.bookshop.model.Book;
-import com.example.bookshop.model.User;
+import com.example.bookshop.dto.UserDTO;
 import com.example.bookshop.model.UserDetailsImpl;
 import com.example.bookshop.service.BookService;
-import com.example.bookshop.service.OrderService;
 import com.example.bookshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/bookmark")
@@ -34,14 +31,10 @@ public class BookmarkController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model
     ) {
-        User user = userService.getPrivateById(userDetails.getUser().getId());
-        List<Book> bookmarks = userService.getPrivateById(userDetails.getUser().getId()).getBookmarks()
-                .stream().map(bookService::getById)
-                .toList();
-        bookmarks = user.getBookmarks().stream()
-                        .map(bookService::getById)
-                        .toList();
-        model.addAttribute("bookmarks", bookmarks);
+        UserDTO user = userService.getById(userDetails.getUser().getId());
+        model.addAttribute("bookmarks", user.getBookmarks().stream()
+                .map(bookService::getById)
+                .toList());
         return "bookmark";
     }
 
@@ -52,7 +45,6 @@ public class BookmarkController {
     ) {
         form.remove("_csrf");
         for (String key : form.keySet()) {
-            System.out.println(key);
             userService.updateUserBookmarksById(userDetails.getUser().getId(), Long.parseLong(key), false);
         }
         return "redirect:/bookmark";

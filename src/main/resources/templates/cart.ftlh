@@ -8,7 +8,7 @@
         </button>
         </#if>
         <div class="col p-3 mt-3">
-            <div class="collapse" id="collapseExample">
+            <div class="collapse mb-3" id="collapseExample">
                 <div><h4>Оформление заказа</h4></div>
                 <form action="/cart/create" name="order" method="post">
                     <div class="card p-3">

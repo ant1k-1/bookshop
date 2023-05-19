@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 public class OrderService {
@@ -28,20 +28,14 @@ public class OrderService {
         return orderRepository.getOrderById(id).orElse(null);
     }
 
-    public List<Order> getByCustomerId(Long id) {
-        return orderRepository.getOrdersByCustomer_Id(id);
+    public List<OrderDTO> getByCustomerId(Long id) {
+        return orderRepository.getOrdersByCustomer_Id(id)
+                .stream().map(this::makeDTO).toList();
     }
 
-    public List<Order> getByCustomerUsername(String username) {
-        return orderRepository.getOrdersByCustomer_Username(username);
-    }
-
-    public List<Order> getDeliveredByCustomerId(Long id, Boolean isDelivered) {
-        return orderRepository.getOrdersByCustomer_IdAndIsDelivered(id, isDelivered);
-    }
-
-    public List<Order> getDeliveredByCustomerUsername(String username, Boolean isDelivered) {
-        return orderRepository.getOrdersByCustomer_UsernameAndIsDelivered(username, isDelivered);
+    public List<OrderDTO> getDeliveredByCustomerId(Long id, Boolean isDelivered) {
+        return orderRepository.getOrdersByCustomer_IdAndIsDelivered(id, isDelivered)
+                .stream().map(this::makeDTO).toList();
     }
 
     public Boolean isExisted(Long id) {

@@ -24,14 +24,16 @@ public class SignUpController {
     }
 
     @GetMapping("/sign-up")
-    public String signUp() {
+    public String signUp(Model model) {
+        model.addAttribute("warn", false);
         return "sign-up";
     }
 
     @PostMapping("/sign-up")
     public String signUp(SignUpDTO user, Model model) {
-        if (userRepository.existsByUsername(user.username())) {
-            model.addAttribute("warn", "Пользователь с таким именем уже зарегистрирован");
+        if (userRepository.existsByUsername(user.username()) || user.password().isEmpty() || user.email().isEmpty() ||
+                user.name().isEmpty() || user.birthDate().isEmpty()) {
+            model.addAttribute("warn", true);
             return "sign-up";
         }
         userRepository.save(
@@ -43,6 +45,6 @@ public class SignUpController {
                         user.birthDate()
                 )
         );
-        return "redirect:/sign-ip";
+        return "redirect:/sign-up";
     }
 }

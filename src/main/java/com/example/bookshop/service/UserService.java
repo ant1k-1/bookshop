@@ -1,6 +1,7 @@
 package com.example.bookshop.service;
 
 import com.example.bookshop.dto.UserDTO;
+import com.example.bookshop.enums.Role;
 import com.example.bookshop.model.User;
 import com.example.bookshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -18,21 +20,12 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final BookService bookService;
-    private final OrderService orderService;
-    private final CommentService commentService;
-
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository,
-                       BookService bookService,
-                       OrderService orderService,
-                       CommentService commentService,
-                       PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BookService bookService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.bookService = bookService;
-        this.orderService = orderService;
-        this.commentService = commentService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -40,8 +33,26 @@ public class UserService {
         return userRepository.getReferenceById(id).makeDTO();
     }
 
+    public Boolean isExisted(Long id) {
+        return userRepository.existsById(id);
+    }
+
+    public Long isExisted(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            return userOptional.get().getId();
+        }
+        return -1L;
+    }
+
     public List<UserDTO> getAll(){
-        return userRepository.findAll()
+        return userRepository.findAll().stream()
+                .map(User::makeDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserDTO> getAllCommentBlocked() {
+        return userRepository.findAllByIsCommentsAllowedFalse()
                 .stream()
                 .map(User::makeDTO)
                 .collect(Collectors.toList());
@@ -62,8 +73,7 @@ public class UserService {
     }
 
     public User getPrivateUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElse(null);
+        return userRepository.findByUsername(username).orElse(null);
     }
 
     public void updateUserCartById(Long userId, Long bookId, Integer amount, boolean add) {
@@ -85,20 +95,9 @@ public class UserService {
                 user.getBookmarks().add(bookId);
             } else {
                 user.getBookmarks().remove(bookId);
-//                user.getBookmarks().clear();
             }
             userRepository.save(user);
         }
-    }
-
-    public boolean addCommentById(Long userId, Long commentId) {
-        User user = userRepository.getReferenceById(userId);
-        if (commentService.isExisted(commentId)) {
-            user.getComments().add(commentService.getById(commentId));
-            userRepository.save(user);
-            return true;
-        }
-        return false;
     }
 
     public void clearCartById(Long id) {
@@ -122,17 +121,76 @@ public class UserService {
                 changed = true;
             }
         }
-        if (!email.equals(user.getEmail())) {
-            user.setEmail(email);
-            changed = true;
+        if (email != null) {
+            if (!email.equals(user.getEmail()) && !email.equals("nochange")) {
+                user.setEmail(email);
+                changed = true;
+            }
         }
-        if (!name.equals(user.getName())) {
-            user.setName(name);
-            changed = true;
+        if (name != null) {
+            if (!name.equals(user.getName()) && !name.equals("nochange")) {
+                user.setName(name);
+                changed = true;
+            }
         }
         if (changed) {
             userRepository.save(user);
         }
     }
 
+    public void editUserById(
+            Long id,
+            String username,
+            String password,
+            String commentsAllowed,
+            String activeStatus,
+            String isModer,
+            String isAdmin
+    ) {
+        boolean changed = false;
+        User user = userRepository.getReferenceById(id);
+        if (!username.equals(user.getUsername()) && !userRepository.existsByUsername(username)){
+            user.setUsername(username);
+            changed = true;
+        }
+        if (!password.equals("nochange")) {
+            if (!passwordEncoder.encode(password).equals(user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(password));
+                changed = true;
+            }
+        }
+        if (activeStatus != null) {
+            user.setIsActiveStatus(false);
+            changed = true;
+        } else if (!user.getIsActiveStatus()){
+            user.setIsActiveStatus(true);
+            changed = true;
+        }
+        if (commentsAllowed != null) {
+            user.setIsCommentsAllowed(false);
+            changed = true;
+        } else if (!user.getIsCommentsAllowed()) {
+            user.setIsCommentsAllowed(true);
+            changed = true;
+        }
+        if (isModer != null) {
+            user.getRoles().add(Role.ROLE_MODERATOR);
+            changed = true;
+        } else if (user.isModer()){
+            user.getRoles().remove(Role.ROLE_MODERATOR);
+            changed = true;
+        }
+        if (isAdmin != null) {
+            user.getRoles().add(Role.ROLE_ADMIN);
+            changed = true;
+        }
+        if (changed) {
+            userRepository.save(user);
+        }
+    }
+    public void accessCommentsById(Long userId, boolean access) {
+        User user = userRepository.getReferenceById(userId);
+        user.setIsCommentsAllowed(access);
+        userRepository.save(user);
+    }
 }

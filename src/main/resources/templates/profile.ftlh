@@ -3,27 +3,27 @@
 <@c.page "Профиль">
     <div class="card p-3 mb-3">
         <h1 class="mb-3">Профиль пользователя ${user.username}</h1>
-        <form action="profile/edit" method="post">
+        <form action="profile/edit" method="post" autocomplete="off">
             <input type="hidden" name="_csrf" value="${_csrf.token}">
             <#if !user.isAdmin()>
                 <div class="mb-3">
                     <label for="name" class="form-label">Имя</label>
-                    <input name="name" type="text" class="form-control" id="name" placeholder="${user.name}">
+                    <input autocomplete="off" name="name" type="text" class="form-control" id="name" placeholder="${user.name}">
                 </div>
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Адрес электронной почты</label>
-                    <input name="email" type="email" class="form-control" id="email" placeholder="${user.email}">
+                    <input autocomplete="off" name="email" type="email" class="form-control" id="email" placeholder="${user.email}">
                 </div>
                 <#else>
                     <div class="mb-3">
                         <label for="name" class="form-label">Имя</label>
-                        <input name="name" type="text" class="form-control" id="name" placeholder="admin">
+                        <input autocomplete="off" name="name" type="text" class="form-control" id="name" placeholder="admin">
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Адрес электронной почты</label>
-                        <input name="email" type="email" class="form-control" id="email" placeholder="admin">
+                        <input autocomplete="off" name="email" type="email" class="form-control" id="email" placeholder="admin">
                     </div>
             </#if>
             <div class="mb-3">
@@ -31,12 +31,12 @@
             </div>
             <div class="mb-3">
                 <label for="oldPassword" class="form-label">Старый пароль</label>
-                <input name="oldPassword" type="password" class="form-control" id="oldPassword" placeholder="Ваш старый пароль" value="nochange">
+                <input autocomplete="off" name="oldPassword" type="password" class="form-control" id="oldPassword" placeholder="Ваш старый пароль">
             </div>
 
             <div class="mb-3">
                 <label for="newPassword" class="form-label">Новый пароль</label>
-                <input name="newPassword" type="password" class="form-control" id="newPassword" placeholder="Ваш новый пароль" value="nochange">
+                <input autocomplete="off" name="newPassword" type="password" class="form-control" id="newPassword" placeholder="Ваш новый пароль">
             </div>
             <button type="submit" class="btn btn-primary">Обновить</button>
         </form>

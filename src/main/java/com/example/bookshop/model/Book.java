@@ -160,12 +160,15 @@ public class Book {
     }
 
     public String toStringGenres() {
-        StringBuilder string = new StringBuilder();
-        for (Genre genre : genres) {
-            string.append(genre.toRussian(genre)).append(", ");
+        if (!genres.isEmpty()) {
+            StringBuilder string = new StringBuilder();
+            for (Genre genre : genres) {
+                string.append(genre.toRussian(genre)).append(", ");
+            }
+            string.delete(string.lastIndexOf(","), string.length());
+            return string.toString();
         }
-        string.delete(string.lastIndexOf(","), string.length());
-        return string.toString();
+        return "";
     }
 
     public void sold(Integer amount) {

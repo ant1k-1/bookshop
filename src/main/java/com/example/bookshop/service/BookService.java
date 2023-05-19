@@ -8,10 +8,7 @@ import com.example.bookshop.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,5 +88,75 @@ public class BookService {
 
     public void update(Book book) {
         bookRepository.save(book);
+    }
+
+    public void editBookById(
+            Long id,
+            String title,
+            String author,
+            Integer year,
+            String publisher,
+            String ISBN,
+            Double price,
+            Integer sale,
+            Integer amount,
+            Integer ageRestriction,
+            String description,
+            Category category,
+            Set<Genre> genres
+    ) {
+        boolean changed = false;
+        Book book = bookRepository.getReferenceById(id);
+        if (!book.getTitle().equals(title)) {
+            book.setTitle(title);
+            changed = true;
+        }
+        if (!book.getAuthor().equals(author)) {
+            book.setAuthor(author);
+            changed = true;
+        }
+        if (!(book.getYear().intValue() == year.intValue())) {
+            book.setYear(year);
+            changed = true;
+        }
+        if (!book.getPublisher().equals(publisher)) {
+            book.setPublisher(publisher);
+            changed = true;
+        }
+        if (!book.getISBN().equals(ISBN)) {
+            book.setISBN(ISBN);
+            changed = true;
+        }
+        if (!(book.getPrice().doubleValue() == price.doubleValue())) {
+            book.setPrice(price);
+            changed = true;
+        }
+        if (!(book.getSale().intValue() == sale.intValue())) {
+            book.setSale(sale);
+            changed = true;
+        }
+        if (!(book.getAmount().intValue() == amount.intValue())) {
+            book.setAmount(amount);
+            changed = true;
+        }
+        if (!(book.getAgeRestriction().intValue() == ageRestriction.intValue())) {
+            book.setAgeRestriction(ageRestriction);
+            changed = true;
+        }
+        if (!book.getDescription().equals(description)) {
+            book.setDescription(description);
+            changed = true;
+        }
+        if (!book.getCategory().equals(category)) {
+            book.setCategory(category);
+            changed = true;
+        }
+        if (!book.getGenres().equals(genres)) {
+            book.setGenres(genres);
+            changed = true;
+        }
+        if (changed) {
+            bookRepository.save(book);
+        }
     }
 }

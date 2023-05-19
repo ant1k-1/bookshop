@@ -1,12 +1,10 @@
 package com.example.bookshop.controller;
 
-import com.example.bookshop.dto.CommentDTO;
 import com.example.bookshop.dto.UserDTO;
 import com.example.bookshop.model.Book;
 import com.example.bookshop.model.Comment;
 import com.example.bookshop.model.User;
 import com.example.bookshop.model.UserDetailsImpl;
-import com.example.bookshop.repository.BookRepository;
 import com.example.bookshop.service.BookService;
 import com.example.bookshop.service.CommentService;
 import com.example.bookshop.service.UserService;
@@ -18,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/book")
@@ -42,18 +39,10 @@ public class BookController {
             @CurrentSecurityContext(expression = "authentication?.name") String username,
             Model model
     ) {
-        Book book = bookService.getById(id);
-        if (book == null) {
-            model.addAttribute("empty", true);
-            return "book";
-        }
-
-        model.addAttribute("book", book);
+        model.addAttribute("book", bookService.getById(id));
         if (!username.equals("anonymousUser")) {
             model.addAttribute("user", userService.getById(userDetails.getUser().getId()));
         }
-
-        model.addAttribute("error", true);
         return "book";
     }
 
@@ -79,8 +68,6 @@ public class BookController {
     public String sendComment(
             @PathVariable("id") Long bookId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam("title") String title,
-            @RequestParam("description") String text,
             @RequestParam Map<String, String> form,
             Model model
     ) {

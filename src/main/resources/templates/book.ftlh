@@ -183,54 +183,61 @@
          </#if>
         <div class="col p-3 mt-3">
             <#if known>
-                <div class="collapse" id="collapseExample">
+                <div class="collapse mb-3" id="collapseExample">
                     <div><h4>Оставьте свой отзыв!</h4></div>
                     <#if user.isCommented(book.id)>
                         <div class="card p-3 mb-3">
                             <h5>Вы уже оставили отзыв на эту книгу</h5>
                         </div>
                     <#else>
-                        <form action="/book/${book.id}/comment" name="comment" method="post">
-                            <div class="card p-3">
-                                <input type="hidden" name="_csrf" value="${_csrf.token}">
-                                <div class="mb-3">
-                                    <label for="title1" class="form-label">Заголовок</label>
-                                    <input name="title" type="text" class="form-control" id="title1">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="description1" class="form-label">Отзыв</label>
-                                    <textarea name="description" class="form-control" id="description1" rows="10"></textarea>
-                                </div>
-                                <div class="mb-1">
-                                    <p>Оценка:</p>
-                                </div>
-                                <div class="col">
-                                    <div class="star-rating d-flex flex-column ">
-                                        <div class="form-check d-flex flex-row">
-                                            <label class="form-check-label">1</label>
-                                            <input name="rating" class="form-check-input" type="radio" id="star1" value="1" style="margin-left: .5rem;">
-                                        </div>
-                                        <div class="form-check d-flex flex-row">
-                                            <label class="form-check-label" for="star2">2</label>
-                                            <input name="rating" class="form-check-input" type="radio" id="star2" value="2" style="margin-left: .5rem">
-                                        </div>
-                                        <div class="form-check d-flex flex-row">
-                                            <label class="form-check-label" for="star3">3</label>
-                                            <input name="rating" class="form-check-input" type="radio" id="star3" value="3" style="margin-left: .5rem">
-                                        </div>
-                                        <div class="form-check d-flex flex-row">
-                                            <label class="form-check-label" for="star4">4</label>
-                                            <input name="rating" class="form-check-input" type="radio" id="star4" value="4" style="margin-left: .5rem">
-                                        </div>
-                                        <div class="form-check d-flex flex-row">
-                                            <label class="form-check-label" for="star5">5</label>
-                                            <input name="rating" class="form-check-input" type="radio" id="star5" value="5" style="margin-left: .5rem">
+                        <#if user.isCommentsAllowed>
+                            <form action="/book/${book.id}/comment" name="comment" method="post">
+                                <div class="card p-3">
+                                    <input type="hidden" name="_csrf" value="${_csrf.token}">
+                                    <div class="mb-3">
+                                        <label for="title1" class="form-label">Заголовок</label>
+                                        <input autocomplete="off" name="title" type="text" class="form-control" id="title1">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description1" class="form-label">Отзыв</label>
+                                        <textarea name="description" class="form-control" id="description1" rows="10"></textarea>
+                                    </div>
+                                    <div class="mb-1">
+                                        <p>Оценка:</p>
+                                    </div>
+                                    <div class="col">
+                                        <div class="star-rating d-flex flex-column ">
+                                            <div class="form-check d-flex flex-row">
+                                                <label class="form-check-label">1</label>
+                                                <input name="rating" class="form-check-input" type="radio" id="star1" value="1" style="margin-left: .5rem;">
+                                            </div>
+                                            <div class="form-check d-flex flex-row">
+                                                <label class="form-check-label" for="star2">2</label>
+                                                <input name="rating" class="form-check-input" type="radio" id="star2" value="2" style="margin-left: .5rem">
+                                            </div>
+                                            <div class="form-check d-flex flex-row">
+                                                <label class="form-check-label" for="star3">3</label>
+                                                <input name="rating" class="form-check-input" type="radio" id="star3" value="3" style="margin-left: .5rem">
+                                            </div>
+                                            <div class="form-check d-flex flex-row">
+                                                <label class="form-check-label" for="star4">4</label>
+                                                <input name="rating" class="form-check-input" type="radio" id="star4" value="4" style="margin-left: .5rem">
+                                            </div>
+                                            <div class="form-check d-flex flex-row">
+                                                <label class="form-check-label" for="star5">5</label>
+                                                <input name="rating" class="form-check-input" type="radio" id="star5" value="5" style="margin-left: .5rem">
+                                            </div>
                                         </div>
                                     </div>
+                                    <button type="submit" class="btn btn-primary">Добавить</button>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Добавить</button>
-                            </div>
-                        </form>
+                            </form>
+                            <#else>
+                                <div class="card p-3 mb-3">
+                                    <h5>Вы не можете оставлять отзывы</h5>
+                                </div>
+                        </#if>
+
                     </#if>
                 </div>
             </#if>

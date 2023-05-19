@@ -11,14 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequestMapping("/cart")
 @Controller
@@ -94,15 +90,10 @@ public class CartController {
                             .map(bookService::getById)
                             .toList()
             ));
-            System.out.println(user.getCart());
             for (Long bookId : user.getCart().keySet()) {
-                System.out.println(bookId + "    " + user.getCart().get(bookId));
                 Book book = bookService.getById(bookId);
-                System.out.println(book);
                 book.sold(user.getCart().get(bookId));
-                System.out.println(book);
                 bookService.update(book);
-                System.out.println(book);
             }
             userService.clearCartById(userDetails.getUser().getId());
         }

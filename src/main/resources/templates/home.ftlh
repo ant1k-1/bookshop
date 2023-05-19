@@ -5,10 +5,10 @@
         <div class="d-flex justify-content-center">
             <#if logged>
                 <#if user.isModerator()>
-                    <a href="/moder" class="btn btn-primary mb-3 me-2" style="width: 10rem">Модерация</a>
+                    <a href="/moder" class="btn btn-primary mb-3 me-2" style="width: 15rem">Панель модератора</a>
                 </#if>
                 <#if user.isAdmin()>
-                    <a href="/admin" class="btn btn-primary mb-3 me-2" style="width: 10rem">Добавить книгу</a>
+                    <a href="/admin" class="btn btn-primary mb-3 me-2" style="width: 15rem">Панель админа</a>
                 </#if>
             </#if>
         </div>

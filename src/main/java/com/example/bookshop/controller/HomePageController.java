@@ -1,7 +1,6 @@
 package com.example.bookshop.controller;
 
 import com.example.bookshop.dto.BookDTO;
-import com.example.bookshop.model.Book;
 import com.example.bookshop.model.UserDetailsImpl;
 import com.example.bookshop.service.BookService;
 import com.example.bookshop.service.UserService;
@@ -12,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class HomePageController {
@@ -33,10 +30,8 @@ public class HomePageController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model) {
         List<List<BookDTO>> trending = bookService.getTrending();
-        List<BookDTO> topRate = trending.get(0);
-        List<BookDTO> topSold = trending.get(1);
-        model.addAttribute("topRate", topRate);
-        model.addAttribute("topSold", topSold);
+        model.addAttribute("topRate", trending.get(0));
+        model.addAttribute("topSold", trending.get(1));
         if (username.equals("anonymousUser")) {
             model.addAttribute("logged", false);
             model.addAttribute("name", ", Аноним!");

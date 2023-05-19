@@ -26,35 +26,40 @@
                                 <!-- Username input -->
                                 <div class="form-outline mb-1">
                                     <label class="form-label float-start" for="form3Example1">Логин</label>
-                                    <input name="username" type="text" id="form3Example1" class="form-control" aria-describedby="loginHelp"/>
-                                    <div id="loginHelp" class="form-text">Придумайте логин</div>
+                                    <input name="username" type="text" id="form3Example1" class="form-control" aria-describedby="loginHelp" required/>
+                                    <#if warn>
+                                        <div id="loginHelp" class="form-text text-danger">Такой логин уже занят</div>
+                                        <#else >
+                                            <div id="loginHelp" class="form-text">Придумайте логин</div>
+                                    </#if>
+
                                 </div>
 
                                 <!-- Password input -->
                                 <div class="form-outline mb-1">
                                     <label class="form-label float-start" for="form3Example2">Пароль</label>
-                                    <input name="password" type="password" id="form3Example2" class="form-control" aria-describedby="passwordHelp"/>
+                                    <input name="password" type="password" id="form3Example2" class="form-control" aria-describedby="passwordHelp" required/>
                                     <div id="passwordHelp" class="form-text">Придумайте надежный пароль!</div>
                                 </div>
 
                                 <!-- Email input -->
                                 <div class="form-outline mb-1">
                                     <label class="form-label float-start" for="form3Example3">Почта</label>
-                                    <input name="email" type="email" id="form3Example3" class="form-control" aria-describedby="emailHelp" placeholder="example@mymail.com"/>
+                                    <input name="email" type="email" id="form3Example3" class="form-control" aria-describedby="emailHelp" placeholder="example@mymail.com" required/>
                                     <div id="emailHelp" class="form-text">Для связи с вами</div>
                                 </div>
 
                                 <!-- Name input -->
                                 <div class="form-outline mb-1">
                                     <label class="form-label float-start" for="form3Example4">Имя</label>
-                                    <input name="name" type="text" id="form3Example4" class="form-control" aria-describedby="nameHelp"/>
+                                    <input name="name" type="text" id="form3Example4" class="form-control" aria-describedby="nameHelp" required/>
                                     <div id="nameHelp" class="form-text">Как к вам обращаться?</div>
                                 </div>
 
                                 <!-- Date input -->
                                 <div class="form-outline mb-3">
                                     <label class="form-label float-start" for="form3Example5">Дата рождения</label>
-                                    <input name="birthDate" type="date" id="form3Example5" class="form-control" aria-describedby="birthdayHelp"/>
+                                    <input name="birthDate" type="date" id="form3Example5" class="form-control" aria-describedby="birthdayHelp" required/>
                                     <div id="birthdayHelp" class="form-text">Нужно для фильтрации книг</div>
                                 </div>
 

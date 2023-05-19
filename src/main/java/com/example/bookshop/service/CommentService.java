@@ -5,15 +5,18 @@ import com.example.bookshop.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final BookService bookService;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, BookService bookService) {
         this.commentRepository = commentRepository;
+        this.bookService = bookService;
     }
 
     public boolean isExisted(Long id) {
@@ -32,15 +35,11 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
-    public List<Comment> getByUserId(Long id) {
+    public List<Comment> getByAllUserId(Long id) {
         return commentRepository.findAllByUserId(id);
     }
 
-    public List<Comment> getByUsername(String username) {
-        return commentRepository.findAllByUser_Username(username);
-    }
-
-    public List<Comment> getByBookId(Long id) {
+    public List<Comment> getByAllBookId(Long id) {
         return commentRepository.findAllByBook_Id(id);
     }
 
@@ -48,7 +47,13 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
+    public List<Comment> getUnModerated() {
+        return commentRepository.findAllByIsModeratedFalse()
+                .stream().sorted(Comparator.comparing(Comment::getCreationDate)).toList();
+    }
+
     public void update(Comment comment) {
         commentRepository.save(comment);
     }
+
 }

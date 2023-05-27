@@ -54,7 +54,7 @@
                             </div>
                             <div class="row p-2">
                                 <label for="${book.id}amount">Количество</label>
-                                <input required min="1" max="${book.amount}" class="mt-3 w-50" type="number" name="${book.id}amount" id="${book.id}amount" style="margin-left: 2rem" value="${amount}">
+                                <input min="1" max="${book.amount}" class="mt-3 w-50" type="number" name="${book.id}amount" id="${book.id}amount" style="margin-left: 2rem" value="${amount}">
                             </div>
                             <div class="p-2 form-check d-flex flex-row align-items-center">
                                 <label for="${book.id}" class="form-check-label">Удалить</label>

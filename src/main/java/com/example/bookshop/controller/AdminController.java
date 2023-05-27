@@ -115,19 +115,11 @@ public class AdminController {
                 description,
                 null
         );
-        Set<String> categories = Arrays.stream(Category.values())
-                .map(Category::name)
-                .collect(Collectors.toSet());
         Set<String> genres = Arrays.stream(Genre.values())
                 .map(Genre::name)
                 .collect(Collectors.toSet());
 
-        for (String key : form.keySet()) {
-            if (categories.contains(key)) {
-                book.setCategory(Category.valueOf(key));
-                break;
-            }
-        }
+        book.setCategory(Category.valueOf(form.get("category")));
 
         for (String key : form.keySet()) {
             if (genres.contains(key)) {

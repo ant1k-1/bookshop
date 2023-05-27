@@ -111,7 +111,7 @@
                 </div>
                 <#list categories! as category>
                     <div class="mb-3 form-check">
-                        <input name="${category}" class="form-check-input" type="radio" id="${category}">
+                        <input name="category" class="form-check-input" type="radio" id="${category}" value="${category}">
                         <label class="form-check-label" for="${category}">
                             ${category.toRussian(category)}
                         </label>

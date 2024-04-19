@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookshop
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bookshop
+      SPRING_DATASOURCE_USERNAME: bookshop
+      SPRING_DATASOURCE_PASSWORD: bookshop
+
+  db:
+    image: postgres
+    container_name: db
+    volumes:
+      - ./backup:/docker-entrypoint-initdb.d
+      - ./dbdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: bookshop
+      POSTGRES_PASSWORD: bookshop

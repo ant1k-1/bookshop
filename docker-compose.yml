@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   app:
+    restart: on-failure
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,6 +10,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
+      db:
+        condition: service_healthy
+    links:
       - db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/bookshop
@@ -24,3 +28,9 @@ services:
     environment:
       POSTGRES_USER: bookshop
       POSTGRES_PASSWORD: bookshop
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "bookshop"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 150s
